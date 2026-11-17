@@ -1,0 +1,5 @@
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import { VitePWA } from 'vite-plugin-pwa';
+export default defineConfig({build:{rollupOptions:{output:{manualChunks:{charts:['recharts'],markdown:['react-markdown'],database:['dexie','dexie-react-hooks']}}}},plugins:[react(),tailwindcss(),VitePWA({registerType:'prompt',includeAssets:['icon.svg','icon-192.png','icon-512.png'],manifest:{name:'Acadora',short_name:'Acadora',description:'Your academic life, organized.',theme_color:'#4F46E5',background_color:'#F8FAFC',display:'standalone',start_url:'/',icons:[{src:'/icon-192.png',sizes:'192x192',type:'image/png'},{src:'/icon-512.png',sizes:'512x512',type:'image/png'},{src:'/icon.svg',sizes:'any',type:'image/svg+xml',purpose:'any'}]},workbox:{globPatterns:['**/*.{js,css,html,svg,png,woff2}'],navigateFallback:'/index.html'}})],test:{environment:'jsdom',setupFiles:['./src/test-setup.ts'],include:['src/**/*.test.{ts,tsx}']}});

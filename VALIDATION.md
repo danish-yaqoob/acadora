@@ -1,6 +1,6 @@
-# Validation — 2026-11-17
+# Validation — 2026-11-18
 
-Local release candidate tested on Windows using Node.js and installed Google Chrome through Playwright's Chromium driver. No GitHub repository or hosted production deployment has been created.
+Local release candidate tested on Windows using Node.js and installed Google Chrome through Playwright's Chromium driver. The source repository is published on GitHub; no hosted production deployment has been created. Version 0.2.0 adds Simplified Chinese.
 
 ## Executed checks
 
@@ -8,7 +8,7 @@ Local release candidate tested on Windows using Node.js and installed Google Chr
 | --- | --- |
 | TypeScript strict type checking | Passed |
 | ESLint | Passed |
-| Vitest + React Testing Library | 13 tests passed |
+| Vitest + React Testing Library | 16 tests passed |
 | Vite production build | Passed; code split into application, database, charts, and Markdown chunks |
 | Production PWA generation | Passed; 43 precached assets, including local fonts and icons |
 | Playwright desktop workflow | Passed |
@@ -22,7 +22,7 @@ Unit coverage includes database persistence after closing/reopening, course edit
 
 The desktop browser workflow covers first-time onboarding, course creation/editing, task creation/completion/filtering, planner scheduling, calendar navigation and examination creation, note autosave across refresh and Markdown preview, timer start/pause/partial recording, dark theme persistence, JSON download and actual file restoration, dashboard, analytics navigation, offline reload, and browser runtime error collection. The mobile workflow covers onboarding skip, menu navigation, focus controls, and viewport fit.
 
-CI runs type checking, lint, unit tests, build, and Chromium browser tests on Linux. That remote CI has not run because the repository is not published. Local browser checks used `PLAYWRIGHT_CHANNEL=chrome`; the default CI configuration uses Playwright's downloaded Chromium.
+CI runs type checking, lint, unit tests, build, and Chromium browser tests on Linux. Remote CI for this update will run after the commit is pushed. Local browser checks used `PLAYWRIGHT_CHANNEL=chrome`; the default CI configuration uses Playwright's downloaded Chromium.
 
 ## Known limitations
 
@@ -33,10 +33,10 @@ CI runs type checking, lint, unit tests, build, and Chromium browser tests on Li
 - Task completion analytics use the latest update timestamp of tasks currently completed. There is no immutable completion ledger.
 - Weekly charts show the current week; date filtering controls the summary metrics and course distribution. Heatmaps cover the last 140 days.
 - Data is browser-local and unencrypted. There is no sync. Browser deletion, eviction, or a changed origin can lose records. JSON backups are essential.
-- English labels are implemented; message catalogs and translated locales remain future work.
+- English and Simplified Chinese are implemented; additional languages remain future work.
 - Notifications require a supported browser and permission. Closed apps do not send notifications. Open tabs reconcile timestamps after waking.
 - Dependencies are locked for reproducibility. Review supported-version upgrades before long-term production operation; the chosen Vite/Recharts/ESLint major versions are older established APIs.
-- GitHub authentication and a repository owner were not available. Publication commands are provided in README. Maintainers should enable private vulnerability reporting after publication.
+- The source repository is danish-yaqoob/acadora. Maintainers should enable private vulnerability reporting.
 
 ## Reproduce
 
@@ -49,3 +49,5 @@ pnpm build
 pnpm exec playwright install chromium
 pnpm test:e2e
 ```
+
+Language coverage includes v1 database migration without data loss, legacy backup defaults, localized dates and dynamic labels, Chinese navigation across screens, task creation with stable enum values, unchanged user content, persisted language after refresh/offline reload, mobile layout, and switching back to English.

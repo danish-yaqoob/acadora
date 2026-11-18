@@ -27,20 +27,65 @@ Screenshots from the tested production build contain only test workspace data. N
 
 ![Desktop dashboard](docs/dashboard-desktop.png)
 
-[Dark dashboard](docs/dashboard-dark.png) · [Mobile focus timer](docs/focus-mobile.png)
+[简体中文 dashboard](docs/dashboard-chinese.png) · [Dark dashboard](docs/dashboard-dark.png) · [Mobile focus timer](docs/focus-mobile.png)
 
 ## Run locally
 
-Requirements: Node.js 22.12+ and pnpm 11.25.0 (or npm).
+Anyone can run Acadora on Windows, macOS, or Linux without an account, backend, API key, or payment. Install **Node.js 22.12 or newer** (includes npm) from [nodejs.org](https://nodejs.org/) and **Git** from [git-scm.com](https://git-scm.com/). Open PowerShell on Windows or Terminal on macOS/Linux.
+
+### Quick start with npm
 
 ```sh
-corepack enable
-corepack prepare pnpm@11.25.0 --activate
+git clone https://github.com/danish-yaqoob/acadora.git
+cd acadora
+npm install
+npm run dev
+```
+
+Open **http://127.0.0.1:5173/**, or the exact local URL Vite prints if that port is busy. Leave the terminal open while using the app; press **Ctrl+C** to stop it. To start it again, enter the `acadora` folder and run `npm run dev`. You only need to install dependencies the first time or after dependency changes.
+
+If you prefer not to install Git, select **Code → Download ZIP** on the GitHub repository, extract it, open a terminal in the extracted folder containing `package.json`, and run `npm install` followed by `npm run dev`.
+
+### Reproducible development with pnpm
+
+The committed lockfile uses pnpm 11.25.0. After cloning and entering the project folder:
+
+```sh
+npm install --global pnpm@11.25.0
 pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open the local URL printed by Vite. To use npm instead, run `npm install` and `npm run dev`; the committed reproducibility lockfile is for pnpm.
+### Build and use offline
+
+```sh
+npm run build
+npm run preview
+```
+
+Open **http://127.0.0.1:4173/** online and wait for the offline-ready message. The production preview caches the application for offline access on that same browser and origin. Development mode does not register a service worker. Where supported, use the browser's **Install app / Add to Home Screen** action to install the PWA. Data stays on each device; use JSON backup/restore to move it between devices.
+
+For phone access, deploy the production `dist/` folder to an HTTPS host and open that site on the phone. A computer's `127.0.0.1` address cannot be opened from another device. An HTTPS origin is required for remote PWA installation and service workers.
+
+### Update an existing checkout
+
+Back up your data in Settings first, then stop the server and run:
+
+```sh
+git pull --ff-only
+npm install
+npm run dev
+```
+
+Use the same browser and local URL to retain access to your stored workspace. Installed production apps show a reload prompt when an updated build is available.
+
+### Change language / 切换语言
+
+Choose **Settings → Language → 简体中文 → Save preferences**. To switch back, choose **设置 → 语言 / Language → English → 保存偏好设置**. Language is also available during onboarding and is saved locally, survives refresh, and is included in JSON backups. Existing workspaces and older backups default to English. Interface labels, dates, dialogs, and controls are localized; your course names, tasks, and note contents are never automatically translated.
+
+在“设置”中，将“语言 / Language”选择为“简体中文”，然后保存偏好设置。无需账户，也不需要联网翻译。下载源代码后，在项目目录运行 `npm install` 和 `npm run dev`，再打开终端显示的本地网址即可。
+
+### Development checks
 
 ```sh
 pnpm lint
@@ -83,13 +128,13 @@ All personal data operations go through the database boundary. Optional future s
 
 ## Accessibility and internationalization
 
-Labeled inputs, keyboard-operable controls, native focus-trapped modal dialogs, a skip link, status messages, mobile navigation, and reduced-motion support are included. Dates follow the device time zone with English date labels; 12/24-hour time and Sunday/Monday weeks are configurable. English copy is currently colocated with feature components; a translated message catalog and locale switching are roadmap work. Manual screen-reader and cross-browser accessibility audits are still recommended before broad release.
+Labeled inputs, keyboard-operable controls, native focus-trapped modal dialogs, a skip link, status messages, mobile navigation, and reduced-motion support are included. English and Simplified Chinese (`zh-CN`) are supported through `src/i18n.ts` and `src/zh-CN.json`. Dates use the selected language and device time zone; 12/24-hour time and Sunday/Monday weeks are configurable. Stored enum values stay stable across languages. Database version 2 adds the language preference without changing academic records; legacy version 1 backups remain importable. Manual screen-reader and cross-browser accessibility audits are still recommended before broad release.
 
 ## Release status and roadmap
 
-This is version 0.1.0, prepared for public source release. It has not been published to GitHub by this build. See `VALIDATION.md` for executed checks and limitations. Before a broad production launch, review dependency updates, audit accessibility in target browsers, and establish maintainer/security contact details.
+This is version **0.2.0**. The source repository is [danish-yaqoob/acadora](https://github.com/danish-yaqoob/acadora). See `VALIDATION.md` for executed checks and limitations. A hosted production website is not configured. Before a broad production launch, review dependency updates, audit accessibility in target browsers, and establish maintainer/security contact details.
 
-Roadmap: localized message catalogs; sync as an explicitly optional adapter; exact pause-segment analytics; multi-tab timer ownership; drag-and-drop planning (sessions can already be rearranged by editing); richer course-note navigation; immutable completion history; browser and assistive-technology coverage.
+Roadmap: additional languages; sync as an explicitly optional adapter; exact pause-segment analytics; multi-tab timer ownership; drag-and-drop planning (sessions can already be rearranged by editing); richer course-note navigation; immutable completion history; browser and assistive-technology coverage.
 
 ## Contributing
 
@@ -103,11 +148,11 @@ Install and authenticate GitHub CLI, then run from this directory. Substitute yo
 gh auth login
 git init -b main
 git add .
-git commit -m "Release Acadora 0.1.0"
+git commit -m "Release Acadora 0.2.0"
 gh repo create YOUR_ACCOUNT/acadora --public --source=. --remote=origin --description "Acadora is a free, open-source academic productivity platform for students worldwide. Organize courses, manage assignments, plan study sessions, track focus time, and improve your academic productivity." --push
-git tag v0.1.0
-git push origin v0.1.0
-gh release create v0.1.0 --title "Acadora 0.1.0" --notes-file CHANGELOG.md
+git tag v0.2.0
+git push origin v0.2.0
+gh release create v0.2.0 --title "Acadora 0.2.0" --notes-file CHANGELOG.md
 ```
 
 To host, run `pnpm build` and serve `dist/` at an HTTPS origin's root, with SPA fallback to `index.html`. Vite preview is a local verification server, not a production server. For GitHub Pages under `/acadora/`, configure Vite's `base`, PWA paths, and icons for the subpath before deploying. This repository does not publish a site automatically.

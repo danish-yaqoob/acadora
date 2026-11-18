@@ -21,4 +21,3 @@ describe('timestamp timer',()=>{
  it('never records breaks as study time',async()=>{vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(1000000);useTimer.getState().configure('Short break',1);useTimer.getState().start();vi.setSystemTime(1060000);await useTimer.getState().finish();expect(await db.sessions.count()).toBe(0);});
  it('updates a linked task actual duration',async()=>{const t=task();await db.tasks.add(t);vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(1000000);useTimer.getState().setAssociation('',t.id);useTimer.getState().configure('Focus',1);useTimer.getState().start();vi.setSystemTime(1060000);await useTimer.getState().finish();expect((await db.tasks.get(t.id))?.actual).toBe(1);});
 });
-
